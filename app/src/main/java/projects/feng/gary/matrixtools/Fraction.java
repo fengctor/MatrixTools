@@ -4,6 +4,9 @@ public class Fraction {
     private final int numerator;
     private final int denominator;
 
+    public static Fraction zero = new Fraction(0, 1);
+    public static Fraction one = new Fraction(1, 1);
+
     public Fraction(int numerator, int denominator) {
         if (denominator < 0) {
             numerator = -numerator;
@@ -17,6 +20,14 @@ public class Fraction {
     public Fraction(int number) {
         this.numerator = number;
         this.denominator = 1;
+    }
+
+    public Fraction(String fractionRepresentation) {
+        fractionRepresentation = fractionRepresentation.replaceAll("\\s+", "");
+        String[] fractionParts = fractionRepresentation.split("/");
+
+        this.numerator = Integer.parseInt(fractionParts[0]);
+        this.denominator = Integer.parseInt(fractionParts[1]);
     }
 
     public int getNumerator() {
@@ -57,6 +68,14 @@ public class Fraction {
         return multipliedBy(fraction.reciprocal());
     }
 
+    public Fraction negate() {
+        return new Fraction(-this.getNumerator(), this.getDenominator());
+    }
+
+    public Fraction reciprocal() {
+        return new Fraction(this.getDenominator(), this.getNumerator());
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Fraction)) {
@@ -71,18 +90,6 @@ public class Fraction {
     @Override
     public String toString() {
         return this.getNumerator() + " / " + this.getDenominator();
-    }
-
-
-    //-----------------------------HELPER METHODS---------------------------------------------------
-
-
-    private Fraction negate() {
-        return new Fraction(-this.getNumerator(), this.getDenominator());
-    }
-
-    private Fraction reciprocal() {
-        return new Fraction(this.getDenominator(), this.getNumerator());
     }
 
     private int gcd(int a, int b) {
