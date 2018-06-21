@@ -1,5 +1,7 @@
 package projects.feng.gary.matrixtools;
 
+import android.graphics.Point;
+
 import java.util.Arrays;
 
 public class Matrix {
@@ -15,26 +17,44 @@ public class Matrix {
 
     public Fraction[] RREF() {
         Fraction[] result = Arrays.copyOf(matrix, numRows * numCols);
-        for (int i = 0; i < Math.max(numRows, numCols); ++i) {
-            int nextRow = leftMostRow(result);
+        Point lastLeadingPoint = new Point(-1, -1);
+        for (int curRow = 0; curRow < Math.max(numRows, numCols); ++curRow) {
+            Point leadingPoint = nextLeadingPoint(result, lastLeadingPoint);
 
-            if (nextRow == -1) {
+            if (leadingPoint == null) {
                 break;
             }
 
-            swapRows(result, i, nextRow);
+            swapRows(result, curRow, leadingPoint.y);
 
-            multiplyRow(result, firstNonZero(result, i).reciprocal(), i);
+            int leadingCol = leadingPoint.x;
+
+            multiplyRow(result, result[getIndex(curRow, leadingCol)].reciprocal(), curRow);
+
+            for (int reducedRow = 0; reducedRow < numRows; ++reducedRow) {
+                if (reducedRow != curRow) {
+                    Fraction factor = result[getIndex(reducedRow, leadingCol)].negate();
+                    addMultipleOfRow(result, reducedRow, factor, curRow);
+                }
+            }
+
+            lastLeadingPoint = leadingPoint;
         }
 
         return result;
     }
 
-    private int getIndex(int row, int col) {
+    public int getIndex(int row, int col) {
         return row * numCols + col;
     }
 
-    // Row Operations
+    public Fraction get(int row, int col) {
+        return matrix[getIndex(row, col)];
+    }
+
+
+    // ROW OPERATIONS
+
     public void swapRows(Fraction[] scrapMatrix, int rowX, int rowY) {
         for (int i = 0; i < numCols; ++i) {
             Fraction temp = scrapMatrix[getIndex(rowX, i)];
@@ -56,23 +76,15 @@ public class Matrix {
         }
     }
 
-    private int leftMostRow(Fraction[] scrapMatrix) {
-        for (int i = 0; i < numCols; ++i) {
-            for (int j = 0; j < numRows; ++i) {
+    // The "next leading point" is the coordinates of the cell that will become
+    //   the next leading '1'
+
+    private Point nextLeadingPoint(Fraction[] scrapMatrix, Point lastLeadingPoint) {
+        for (int i = lastLeadingPoint.x + 1; i < numCols; ++i) {
+            for (int j = lastLeadingPoint.y + 1; j < numRows; ++j) {
                 if (!scrapMatrix[getIndex(j, i)].equals(Fraction.zero)) {
-                    return j;
+                    return new Point(i, j);
                 }
-            }
-        }
-
-        return -1;
-    }
-
-    private Fraction firstNonZero(Fraction[] scrapMatrix, int row) {
-        for (int i = 0; i < numCols; ++i) {
-            Fraction val = scrapMatrix[getIndex(row, i)];
-            if (!val.equals(Fraction.zero)) {
-                return val;
             }
         }
 

@@ -89,7 +89,7 @@ public class Fraction {
 
     @Override
     public String toString() {
-        return this.getNumerator() + " / " + this.getDenominator();
+        return denominator == 1 ? String.valueOf(numerator) : "(" + this.getNumerator() + "/" + this.getDenominator() + ")";
     }
 
     private int gcd(int a, int b) {
