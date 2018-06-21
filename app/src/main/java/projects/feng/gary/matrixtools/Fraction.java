@@ -8,6 +8,10 @@ public class Fraction {
     public static Fraction one = new Fraction(1, 1);
 
     public Fraction(int numerator, int denominator) {
+        int gcd = gcd(numerator, denominator);
+        numerator /= gcd;
+        denominator /= gcd;
+
         if (denominator < 0) {
             numerator = -numerator;
             denominator = -denominator;
@@ -22,12 +26,30 @@ public class Fraction {
         this.denominator = 1;
     }
 
-    public Fraction(String fractionRepresentation) {
-        fractionRepresentation = fractionRepresentation.replaceAll("\\s+", "");
-        String[] fractionParts = fractionRepresentation.split("/");
+    public Fraction(String stringRepresentation) {
+        stringRepresentation = stringRepresentation.replaceAll("\\s+", "");
+        String[] fractionParts = stringRepresentation.split("/");
 
-        this.numerator = Integer.parseInt(fractionParts[0]);
-        this.denominator = Integer.parseInt(fractionParts[1]);
+        if (fractionParts.length == 1) {
+            this.numerator = Integer.parseInt(fractionParts[0]);
+            this.denominator = 1;
+        } else {
+            int numer = Integer.parseInt(fractionParts[0]);
+            int denom = Integer.parseInt(fractionParts[1]);
+
+            int gcd = gcd(numer, denom);
+
+            numer /= gcd;
+            denom /= gcd;
+
+            if (denom < 0) {
+                numer = -numer;
+                denom = -denom;
+            }
+
+            this.numerator = numer;
+            this.denominator = denom;
+        }
     }
 
     public int getNumerator() {
@@ -39,16 +61,16 @@ public class Fraction {
     }
 
     public Fraction addedBy(Fraction fraction) {
-        int commonDenominator = lcm(this.getDenominator(), fraction.getDenominator());
+        int firstNumerator = this.getNumerator() * fraction.getDenominator();
+        int secondNumerator = fraction.getNumerator() * this.getDenominator();
 
-        int firstNumerator = this.getNumerator() * commonDenominator / this.getDenominator();
-        int secondNumerator = fraction.getNumerator() * commonDenominator / fraction.getDenominator();
+        int newDenominator = this.getDenominator() * fraction.getDenominator();
 
         int newNumerator = firstNumerator + secondNumerator;
 
-        int gcd = gcd(newNumerator, commonDenominator);
+        int gcd = gcd(newNumerator, newDenominator);
 
-        return new Fraction(newNumerator / gcd, commonDenominator / gcd);
+        return new Fraction(newNumerator / gcd, newDenominator / gcd);
     }
 
     public Fraction subtractedBy(Fraction fraction) {
@@ -89,7 +111,7 @@ public class Fraction {
 
     @Override
     public String toString() {
-        return denominator == 1 ? String.valueOf(numerator) : "(" + this.getNumerator() + "/" + this.getDenominator() + ")";
+        return denominator == 1 ? String.valueOf(numerator) : this.getNumerator() + "/" + this.getDenominator();
     }
 
     private int gcd(int a, int b) {

@@ -22,11 +22,11 @@ public class MainActivity extends AppCompatActivity {
                                    new Fraction(3), new Fraction(0), new Fraction(1),
                                    new Fraction(6), new Fraction(0), new Fraction(2)};
                 Matrix matrix = new Matrix(test, 4, 3);
-                Fraction[] rref = matrix.RREF();
+                Matrix rref = matrix.RREF();
 
                 for (int i = 0; i < 4; ++i) {
                     for (int j = 0; j < 3; ++j) {
-                        text.append(rref[matrix.getIndex(i, j)] + "\t\t");
+                        text.append(rref.get(i, j) + "\t\t");
                     }
                     text.append("\n");
                 }
