@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
             for (i in 0..3) {
                 for (j in 0..2) {
                     text.append(rref[i, j].toString())
+                    text.append("\t\t");
                 }
                 text.append("\n")
             }
