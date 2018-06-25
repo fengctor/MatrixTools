@@ -1,7 +1,7 @@
 package projects.feng.gary.matrixtools
 
 
-class FractionKotlin {
+class Fraction {
     private val numerator: Int
     private val denominator: Int
 
@@ -10,6 +10,11 @@ class FractionKotlin {
 
         numerator = numer / gcd
         denominator = denom / gcd
+    }
+
+    constructor(integer: Int) {
+        numerator = integer
+        denominator = 1
     }
 
     constructor(stringRep: String) {
@@ -24,45 +29,45 @@ class FractionKotlin {
         denominator = denom / gcd
     }
 
-    operator fun plus(other: FractionKotlin): FractionKotlin {
+    operator fun plus(other: Fraction): Fraction {
         val newNumer = this.numerator * other.denominator + other.numerator * this.denominator
         val newDenom = this.denominator * other.denominator
 
-        return FractionKotlin(newNumer, newDenom)
+        return Fraction(newNumer, newDenom)
     }
 
-    operator fun minus(other: FractionKotlin): FractionKotlin {
+    operator fun minus(other: Fraction): Fraction {
         return this + -other
     }
 
-    operator fun times(other: FractionKotlin): FractionKotlin {
+    operator fun times(other: Fraction): Fraction {
         val newNumer = this.numerator * other.numerator
         val newDenom = this.denominator * other.denominator
 
-        return FractionKotlin(newNumer, newDenom)
+        return Fraction(newNumer, newDenom)
     }
 
-    operator fun div(other: FractionKotlin): FractionKotlin {
+    operator fun div(other: Fraction): Fraction {
         return this * other.reciprocal()
     }
 
-    operator fun unaryMinus(): FractionKotlin {
-        return FractionKotlin(-this.numerator, this.denominator)
+    operator fun unaryMinus(): Fraction {
+        return Fraction(-this.numerator, this.denominator)
     }
 
-    fun reciprocal(): FractionKotlin {
-        return FractionKotlin(this.denominator, this.numerator)
+    fun reciprocal(): Fraction {
+        return Fraction(this.denominator, this.numerator)
     }
 
 
     override fun equals(other: Any?): Boolean {
-        return other is FractionKotlin
+        return other is Fraction
                 && other.numerator == this.numerator
                 && other.denominator == this.denominator
     }
 
     override fun toString(): String {
-        return if (this.denominator == 0)
+        return if (this.denominator == 1)
             this.numerator.toString()
         else
             this.numerator.toString() + "/" + this.denominator.toString()
@@ -74,5 +79,13 @@ class FractionKotlin {
 
     fun Int.abs(): Int {
         return if (this < 0) -this else this;
+    }
+
+
+    // CONSTANTS
+
+    companion object {
+        val zero = Fraction(0);
+        val one = Fraction(1)
     }
 }
