@@ -1,6 +1,6 @@
 package projects.feng.gary.matrixtools
 
-import kotlin.math.max
+import kotlin.math.min
 
 class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int) {
 
@@ -20,7 +20,7 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
         val result = Matrix(matrixArr.copyOf(), numRows, numCols)
         var lastLeadingPosition: Position = Position(-1, -1)
 
-        for (curRow in 0 until max(numRows, numCols)) {
+        for (curRow in 0 until min(numRows, numCols)) {
             val leadingPosition = result.nextLeadingPosition(lastLeadingPosition)
 
             if (leadingPosition == null) {
