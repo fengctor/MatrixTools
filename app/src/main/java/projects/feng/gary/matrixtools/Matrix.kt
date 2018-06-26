@@ -4,6 +4,10 @@ import kotlin.math.max
 
 class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int) {
 
+    operator fun get(i: Int): Fraction {
+        return matrixArr[i]
+    }
+
     operator fun get(i: Int, j: Int): Fraction {
         return matrixArr[getIndex(i, j)]
     }

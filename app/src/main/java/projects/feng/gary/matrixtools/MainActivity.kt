@@ -7,10 +7,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import projects.feng.gary.matrixtools.R.id.*
-
-const val EXTRA_NUM_ROWS = "number_of_rows"
-const val EXTRA_NUM_COLS = "number_of_cols"
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,29 +15,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /*findViewById<View>(R.id.rrefButton).setOnClickListener {
-            val text = findViewById<TextView>(R.id.text)
-
-            val test = arrayOf(Fraction(5), Fraction(3), Fraction(2),
-                               Fraction("3/2"), Fraction(0), Fraction("1/2"),
-                               Fraction(3), Fraction(0), Fraction(1),
-                               Fraction(6), Fraction(0), Fraction(2))
-            val matrix = Matrix(test, 4, 3)
-            val rref = matrix.getRref()
-
-            for (i in 0..3) {
-                for (j in 0..2) {
-                    text.append(rref[i, j].toString())
-                    text.append("\t\t");
-                }
-                text.append("\n")
-            }
-        }*/
-
-        val rrefButton = rrefCalculatorButton as Button
+        val rrefButton = rrefCalculatorButton
         rrefButton.setOnClickListener({
-            val numRows = (numRowsEditText as EditText).getIntText()
-            val numCols = (numColsEditText as EditText).getIntText()
+            val numRows = numRowsEditText.getIntText()
+            val numCols = numColsEditText.getIntText()
 
             val intent = Intent(this, RREFActivity::class.java).apply {
                 putExtra(EXTRA_NUM_ROWS, numRows)
@@ -50,10 +28,5 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         })
     }
-
-    fun EditText.getIntText(): Int {
-        return text.toString().toInt()
-    }
-
 
 }
