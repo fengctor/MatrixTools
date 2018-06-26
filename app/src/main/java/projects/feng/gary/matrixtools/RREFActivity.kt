@@ -1,7 +1,9 @@
 package projects.feng.gary.matrixtools
 
+import android.graphics.Point
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Display
 import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -34,6 +36,13 @@ class RREFActivity : AppCompatActivity() {
             return
         }
 
+        val display = windowManager.defaultDisplay
+        var size = Point()
+        display.getSize(size)
+
+        val halfWidth = size.x
+        val colWidth = halfWidth / (numCols + 2)
+
         matrixGrid.rowCount = numRows
         matrixGrid.columnCount = numCols
 
@@ -41,7 +50,7 @@ class RREFActivity : AppCompatActivity() {
             for (col in 0 until numCols) {
                 val cell = EditText(this)
                 val param = GridLayout.LayoutParams()
-                param.width = 100
+                param.width = colWidth
                 cell.setLayoutParams(param)
                 cell.gravity = Gravity.CENTER
                 cell.imeOptions = cell.imeOptions or EditorInfo.IME_FLAG_NO_EXTRACT_UI
