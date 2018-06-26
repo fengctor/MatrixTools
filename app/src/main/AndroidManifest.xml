@@ -16,7 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RREFActivity"></activity>
+        <activity android:name=".RREFActivity"
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

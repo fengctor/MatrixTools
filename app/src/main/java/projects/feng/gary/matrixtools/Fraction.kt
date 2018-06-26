@@ -17,16 +17,77 @@ class Fraction {
         denominator = 1
     }
 
-    constructor(stringRep: String) {
-        val fracParts = stringRep.split("/".toRegex())
+    constructor(str: String) {
+        val stringRep = str.replace("\\s".toRegex(), "")
 
-        val numer = fracParts.get(0).toInt()
-        val denom = if (fracParts.size == 1) 1 else fracParts.get(1).toInt()
+        when {
+            stringRep.contains('/') -> {
+                val fracParts = stringRep.split("/".toRegex())
 
-        val gcd = if (denom < 0) -gcd(numer, denom) else gcd(numer, denom)
+                val numer = fracParts.get(0).toInt()
+                val denom = fracParts.get(1).toInt()
 
-        numerator = numer / gcd
-        denominator = denom / gcd
+                val gcd = if (denom < 0) -gcd(numer, denom) else gcd(numer, denom)
+
+                numerator = numer / gcd
+                denominator = denom / gcd
+            }
+            stringRep.contains('.') -> {
+                val decParts = stringRep.split("\\.".toRegex())
+                val numDecPoints = decParts[1].length
+
+                // reduce fractional component before adding on the integer component
+                var fracPartNum = decParts[1].toInt()
+                var fracPartDenom = powerOfTen(numDecPoints)
+
+                val gcd = gcd(fracPartNum, fracPartDenom)
+                fracPartNum /= gcd
+                fracPartDenom /= gcd
+
+                val intPart = decParts[0].toInt() * fracPartDenom
+
+                numerator = (fracPartNum + intPart) *
+                        if (decParts[0].toInt() == 0 && decParts[0].contains('-')) -1 else 1
+                denominator = fracPartDenom
+            }
+            else -> {
+                numerator = stringRep.toInt()
+                denominator = 1
+            }
+        }
+        /*if (stringRep.contains('/')) {
+            val fracParts = stringRep.split("/".toRegex())
+
+            val numer = fracParts.get(0).toInt()
+            val denom = fracParts.get(1).toInt()
+
+            val gcd = if (denom < 0) -gcd(numer, denom) else gcd(numer, denom)
+
+            numerator = numer / gcd
+            denominator = denom / gcd
+
+        } else if (stringRep.contains('.')) {
+            val decParts = stringRep.split("\\.".toRegex())
+            val numDecPoints = decParts[1].length
+
+            // reduce fractional component before adding on the integer component
+            var fracPartNum = decParts[1].toInt()
+            var fracPartDenom = powerOfTen(numDecPoints)
+
+            val gcd = gcd(fracPartNum, fracPartDenom)
+            fracPartNum /= gcd
+            fracPartDenom /= gcd
+
+            val intPart = decParts[0].toInt() * fracPartDenom
+
+            numerator = (fracPartNum + intPart) *
+                    if (decParts[0].toInt() == 0 && decParts[0].contains('-')) -1 else 1
+            denominator = fracPartDenom
+
+        } else {
+            numerator = stringRep.toInt()
+            denominator = 1
+        }*/
     }
 
     operator fun plus(other: Fraction): Fraction {
@@ -76,9 +137,14 @@ class Fraction {
 
     private fun gcd(x: Int, y: Int): Int = if (y == 0) x.abs() else gcd(y, x.rem(y))
 
+    private fun powerOfTen(n: Int): Int {
+        var result = 1
 
-    fun Int.abs(): Int {
-        return if (this < 0) -this else this;
+        for (i in 1..n) {
+            result *= 10
+        }
+
+        return result
     }
 
 

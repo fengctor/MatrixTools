@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.GridLayout
 import kotlinx.android.synthetic.main.activity_rref.*
@@ -43,6 +44,7 @@ class RREFActivity : AppCompatActivity() {
                 param.width = 100
                 cell.setLayoutParams(param)
                 cell.gravity = Gravity.CENTER
+                cell.imeOptions = cell.imeOptions or EditorInfo.IME_FLAG_NO_EXTRACT_UI
 
                 matrixGrid.addView(cell)
             }
@@ -50,7 +52,7 @@ class RREFActivity : AppCompatActivity() {
     }
 
     private fun showRref() {
-        val matrixArr = Array<Fraction>(numRows * numCols, { _ -> Fraction.zero })
+        val matrixArr = Array(numRows * numCols, { _ -> Fraction.zero })
 
         for (i in 0 until numRows * numCols) {
             val cell = matrixGrid.getChildAt(i) as EditText
