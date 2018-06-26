@@ -40,6 +40,7 @@ class RREFActivity : AppCompatActivity() {
         gridParam.width = width
         cell.setLayoutParams(gridParam)
 
+        cell.textSize = 14f
         cell.maxLines = 1
         cell.gravity = Gravity.CENTER
         if (focusable) {
