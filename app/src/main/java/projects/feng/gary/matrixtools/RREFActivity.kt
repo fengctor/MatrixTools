@@ -62,7 +62,7 @@ class RREFActivity : AppCompatActivity() {
                     r = ""
                     break
                 }
-                val numChar = dest.filter { c -> c == char}.length
+                val numChar = dest.fold (0, { acc, c -> if (c == char) 1 else 0 })
                 if (char == '-' && (dstart != 0 || numChar > 0)) {
                     r = ""
                     break
