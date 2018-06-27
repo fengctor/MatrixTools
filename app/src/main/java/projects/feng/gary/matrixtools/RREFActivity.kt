@@ -3,6 +3,9 @@ package projects.feng.gary.matrixtools
 import android.graphics.Point
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.InputFilter
+import android.text.InputType
+import android.text.Spanned
 import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -45,10 +48,33 @@ class RREFActivity : AppCompatActivity() {
         cell.gravity = Gravity.CENTER
         if (focusable) {
             cell.imeOptions = cell.imeOptions or EditorInfo.IME_FLAG_NO_EXTRACT_UI
+            cell.inputType = InputType.TYPE_CLASS_PHONE
         } else {
             cell.isFocusable = false
             cell.isClickable = false
         }
+
+        val filter = InputFilter { source: CharSequence, start: Int, end: Int, dest: Spanned, dstart: Int, dend: Int ->
+            var r: CharSequence? = null
+            for (i in start until end) {
+                val char = source.get(i)
+                if (!Character.isDigit(char) && char != '/' && char != '.' && char != '-') {
+                    r = ""
+                    break
+                }
+                val numChar = dest.filter { c -> c == char}.length
+                if (char == '-' && (dstart != 0 || numChar > 0)) {
+                    r = ""
+                    break
+                }
+                if ((char == '/' || char == '.') && (numChar > 0 || dstart == 0)) {
+                    r = ""
+                    break
+                }
+            }
+            r
+        }
+        cell.filters = arrayOf(filter)
 
         return cell
     }
