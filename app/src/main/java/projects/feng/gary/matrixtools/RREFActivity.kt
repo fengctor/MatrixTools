@@ -110,7 +110,7 @@ class RREFActivity : AppCompatActivity() {
             matrixArr[i] = Fraction(cell.text.toString())
         }
 
-        val rref = Matrix(matrixArr, numRows, numCols).getRref()
+        val rref = Matrix(matrixArr, numRows, numCols).solveRref()
 
         for (i in 0 until numRows * numCols) {
             val cell = rrefGrid.getChildAt(i) as EditText

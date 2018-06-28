@@ -1,8 +1,21 @@
 package projects.feng.gary.matrixtools
 
+import java.util.Arrays.copyOf
 import kotlin.math.min
 
 class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int) {
+    companion object {
+        fun zeroMatrix(rows: Int, cols: Int): Matrix = Matrix(Array(rows * cols, { Fraction.zero }), rows, cols)
+        fun identityMatrix(rows: Int): Matrix =
+                Matrix(Array(rows * rows, { pos ->
+                    if (pos / rows == pos.rem(rows)) Fraction.one else Fraction.zero
+                }), rows, rows)
+    }
+
+    val RREF by lazy { this.clone() }
+
+
+    //---------------------------OPERATOR OVERLOADS-----------------------------------------------//
 
     operator fun get(i: Int): Fraction {
         return matrixArr[i]
@@ -16,33 +29,46 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
         matrixArr[getIndex(i, j)] = value;
     }
 
-    fun getRref(): Matrix {
-        val result = Matrix(matrixArr.copyOf(), numRows, numCols)
+
+    //---------------------------MATRIX FUNCTIONS-------------------------------------------------//
+
+    fun solveRref(): Matrix {
+        lockstepRref(zeroMatrix(numRows, numCols))
+        return RREF
+    }
+
+    fun lockstepRref(other: Matrix): Matrix {
         var lastLeadingPosition: Position = Position(-1, -1)
 
         for (curRow in 0 until min(numRows, numCols)) {
-            val leadingPosition = result.nextLeadingPosition(lastLeadingPosition)
+            val leadingPosition = RREF.nextLeadingPosition(lastLeadingPosition)
 
             if (leadingPosition == null) {
                 break
             }
 
-            result.swapRows(curRow, leadingPosition.row)
+            RREF.swapRows(curRow, leadingPosition.row)
+            other.swapRows(curRow, leadingPosition.row)
 
-            result.multiplyRow(result[curRow, leadingPosition.col].reciprocal(), curRow)
+            RREF.multiplyRow(RREF[curRow, leadingPosition.col].reciprocal(), curRow)
+            other.multiplyRow(RREF[curRow, leadingPosition.col].reciprocal(), curRow)
 
-            for (otherRow in 0 until numRows) {
-                if (otherRow != curRow) {
-                    val factor: Fraction = -result[otherRow, leadingPosition.col]
-                    result.addMultipleOfRow(otherRow, factor, curRow)
+            for (row in 0 until numRows) {
+                if (row != curRow) {
+                    val factor = -RREF[row, leadingPosition.col]
+                    RREF.addMultipleOfRow(row, factor, curRow)
+                    other.addMultipleOfRow(row, factor, curRow)
                 }
             }
 
             lastLeadingPosition = leadingPosition
         }
 
-        return result
+        return other
     }
+
+    fun clone(): Matrix = Matrix(matrixArr.copyOf(), numRows, numCols)
+
 
     //---------------------------ROW OPERATIONS---------------------------------------------------//
 
@@ -86,7 +112,18 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
     }
 
 
-    //---------------------------CLASS------------------------------------------------------------//
+    //---------------------------HELPER CLASS-----------------------------------------------------//
 
     class Position(val row: Int, val col: Int);
+
+
+    //---------------------------OVERRIDES--------------------------------------------------------//
+
+    override fun equals(other: Any?): Boolean {
+        return other != null &&
+                other is Matrix &&
+                this.numRows == other.numRows &&
+                this.numCols == other.numCols &&
+                this.matrixArr.equals(other.matrixArr)
+    }
 }
