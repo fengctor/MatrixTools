@@ -49,32 +49,32 @@ class RREFActivity : AppCompatActivity() {
         if (focusable) {
             cell.imeOptions = cell.imeOptions or EditorInfo.IME_FLAG_NO_EXTRACT_UI
             cell.inputType = InputType.TYPE_CLASS_PHONE
+            val filter = InputFilter { source: CharSequence, start: Int, end: Int, dest: Spanned, dstart: Int, dend: Int ->
+                var r: CharSequence? = null
+                for (i in start until end) {
+                    val char = source.get(i)
+                    if (!Character.isDigit(char) && char != '/' && char != '.' && char != '-') {
+                        r = ""
+                        break
+                    }
+                    val numChar = dest.fold (0, { acc, c -> if (c == char) 1 else 0 })
+                    if (char == '-' && (dstart != 0 || numChar > 0)) {
+                        r = ""
+                        break
+                    }
+                    if ((char == '/' || char == '.') && (numChar > 0 || dstart == 0)) {
+                        r = ""
+                        break
+                    }
+                }
+                r
+            }
+
+            cell.filters = arrayOf(filter)
         } else {
             cell.isFocusable = false
             cell.isClickable = false
         }
-
-        val filter = InputFilter { source: CharSequence, start: Int, end: Int, dest: Spanned, dstart: Int, dend: Int ->
-            var r: CharSequence? = null
-            for (i in start until end) {
-                val char = source.get(i)
-                if (!Character.isDigit(char) && char != '/' && char != '.' && char != '-') {
-                    r = ""
-                    break
-                }
-                val numChar = dest.fold (0, { acc, c -> if (c == char) 1 else 0 })
-                if (char == '-' && (dstart != 0 || numChar > 0)) {
-                    r = ""
-                    break
-                }
-                if ((char == '/' || char == '.') && (numChar > 0 || dstart == 0)) {
-                    r = ""
-                    break
-                }
-            }
-            r
-        }
-        cell.filters = arrayOf(filter)
 
         return cell
     }
