@@ -1,6 +1,5 @@
 package projects.feng.gary.matrixtools
 
-import java.util.Arrays.copyOf
 import kotlin.math.min
 
 class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int) {
@@ -37,7 +36,9 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
         return RREF
     }
 
-    fun lockstepRref(other: Matrix): Matrix {
+    fun lockstepRref(matrix: Matrix): Matrix {
+        val other = matrix.clone()
+
         var lastLeadingPosition: Position = Position(-1, -1)
 
         for (curRow in 0 until min(numRows, numCols)) {
