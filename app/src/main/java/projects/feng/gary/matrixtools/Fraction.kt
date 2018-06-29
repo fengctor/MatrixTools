@@ -5,6 +5,14 @@ class Fraction {
     private val numerator: Int
     private val denominator: Int
 
+    companion object {
+        val zero = Fraction(0);
+        val one = Fraction(1)
+    }
+
+
+    //---------------------------CONSTRUCTORS-----------------------------------------------------//
+
     constructor(numer: Int, denom: Int) {
         val gcd = if (denom < 0) -gcd(numer, denom) else gcd(numer, denom)
 
@@ -57,6 +65,9 @@ class Fraction {
         }
     }
 
+
+    //---------------------------ARITHMETIC FUNCTIONS---------------------------------------------//
+
     operator fun plus(other: Fraction): Fraction {
         val newNumer = this.numerator * other.denominator + other.numerator * this.denominator
         val newDenom = this.denominator * other.denominator
@@ -88,6 +99,8 @@ class Fraction {
     }
 
 
+    //---------------------------OVERRIDES--------------------------------------------------------//
+
     override fun equals(other: Any?): Boolean {
         return other is Fraction
                 && other.numerator == this.numerator
@@ -102,6 +115,8 @@ class Fraction {
     }
 
 
+    //---------------------------HELPERS----------------------------------------------------------//
+
     private fun gcd(x: Int, y: Int): Int = if (y == 0) x.abs() else gcd(y, x.rem(y))
 
     private fun powerOfTen(n: Int): Int {
@@ -112,13 +127,5 @@ class Fraction {
         }
 
         return result
-    }
-
-
-    // CONSTANTS
-
-    companion object {
-        val zero = Fraction(0);
-        val one = Fraction(1)
     }
 }
