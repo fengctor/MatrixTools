@@ -8,13 +8,8 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 
-fun EditText.getIntText(): Int {
-    return text.toString().toInt()
-}
 
-fun Int.abs(): Int {
-    return if (this < 0) -this else this;
-}
+fun Int.abs(): Int = if (this < 0) -this else this
 
 
 @TargetApi(27)

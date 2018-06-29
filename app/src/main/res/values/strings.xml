@@ -9,6 +9,7 @@
     <string name="num_cols_label">Number of columns:</string>
 
     <string name="not_applicable">Not Applicable</string>
+    <string name="wrong_cell">This the result matrix</string>
     <string name="calculator_rref">RREF</string>
     <string name="calculator_inverse">Inverse</string>
 

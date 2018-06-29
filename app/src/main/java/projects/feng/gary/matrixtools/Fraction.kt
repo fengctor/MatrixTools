@@ -29,6 +29,10 @@ class Fraction {
         val stringRep = str.replace("\\s".toRegex(), "")
 
         when {
+            stringRep.equals("") -> {
+                numerator = 0
+                denominator = 1
+            }
             stringRep.contains('/') -> {
                 val fracParts = stringRep.split("/".toRegex())
 
@@ -45,7 +49,7 @@ class Fraction {
                 val numDecPoints = decParts[1].length
 
                 // reduce fractional component before adding on the integer component
-                var fracPartNum = decParts[1].toInt()
+                var fracPartNum = if (numDecPoints == 0) 0 else decParts[1].toInt()
                 var fracPartDenom = powerOfTen(numDecPoints)
 
                 val gcd = gcd(fracPartNum, fracPartDenom)

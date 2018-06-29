@@ -18,12 +18,7 @@ import kotlinx.android.synthetic.main.activity_calculator.*
 import kotlin.math.min
 
 class CalculatorActivity : AppCompatActivity() {
-    val matrixGrid by lazy {
-        matrixLayout
-    }
-    val rrefGrid by lazy {
-        rrefLayout
-    }
+
     val numRows by lazy {
         intent.getIntExtra(EXTRA_NUM_ROWS, 0)
     }
@@ -95,6 +90,9 @@ class CalculatorActivity : AppCompatActivity() {
         } else {
             cell.isFocusable = false
             cell.isClickable = false
+            cell.background = null
+
+            cell.setOnClickListener({ sendToast(R.string.wrong_cell) })
         }
 
         return cell
@@ -114,12 +112,12 @@ class CalculatorActivity : AppCompatActivity() {
         matrixGrid.rowCount = numRows
         matrixGrid.columnCount = numCols
 
-        rrefGrid.rowCount = numRows
-        rrefGrid.columnCount = numCols
+        resultGrid.rowCount = numRows
+        resultGrid.columnCount = numCols
 
         for (i in 0 until numRows * numCols) {
             matrixGrid.addView(createCell(colWidth, true))
-            rrefGrid.addView(createCell(colWidth, false))
+            resultGrid.addView(createCell(colWidth, false))
         }
     }
 
@@ -140,7 +138,7 @@ class CalculatorActivity : AppCompatActivity() {
         }
 
         for (i in 0 until numRows * numCols) {
-            val cell = rrefGrid.getChildAt(i) as EditText
+            val cell = resultGrid.getChildAt(i) as EditText
             cell.setText(result[i].toString())
         }
     }
