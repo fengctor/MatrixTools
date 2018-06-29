@@ -3,6 +3,7 @@ package projects.feng.gary.matrixtools
 import android.graphics.Point
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.text.InputFilter
 import android.text.InputType
 import android.text.Spanned
@@ -14,6 +15,8 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.GridLayout
 import kotlinx.android.synthetic.main.activity_calculator.*
+import kotlin.math.max
+import kotlin.math.min
 
 class CalculatorActivity : AppCompatActivity() {
     val matrixGrid by lazy {
@@ -32,6 +35,12 @@ class CalculatorActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calculator)
+
+        setSupportActionBar(calcBar as Toolbar)
+        supportActionBar?.title = "Matrix Calculations"
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayShowHomeEnabled(true);
 
         setUpMatrix(numRows, numCols)
         initChoiceSpinner()
@@ -54,7 +63,7 @@ class CalculatorActivity : AppCompatActivity() {
         gridParam.width = width
         cell.setLayoutParams(gridParam)
 
-        cell.textSize = 14f
+        cell.textSize = min(width.toFloat() / 6f, 20f)
         cell.maxLines = 1
         cell.gravity = Gravity.CENTER
         if (focusable) {
@@ -114,11 +123,9 @@ class CalculatorActivity : AppCompatActivity() {
     }
 
     private fun showResult() {
-        val matrix = Matrix.zeroMatrix(numRows, numCols)
-        for (i in 0 until numRows * numCols) {
-            val cell = matrixGrid.getChildAt(i) as EditText
-            matrix[i] = Fraction(cell.text.toString())
-        }
+        hideKeyboard()
+
+        val matrix = getGridAsMatrix()
 
         val result = when (type.selectedItemPosition) {
             0 -> matrix.solveRref()
@@ -126,12 +133,25 @@ class CalculatorActivity : AppCompatActivity() {
             else -> Matrix.zeroMatrix(numRows, numCols)
         }
 
+        if (result == null) {
+            sendToast(R.string.not_applicable)
+            return
+        }
+
         for (i in 0 until numRows * numCols) {
             val cell = rrefGrid.getChildAt(i) as EditText
             cell.setText(result[i].toString())
         }
+    }
 
-        hideKeyboard()
+    private fun getGridAsMatrix(): Matrix {
+        val matrix = Matrix.zeroMatrix(numRows, numCols)
+        for (i in 0 until numRows * numCols) {
+            val cell = matrixGrid.getChildAt(i) as EditText
+            matrix[i] = Fraction(cell.text.toString())
+        }
+
+        return matrix
     }
 
     private fun hideKeyboard() {

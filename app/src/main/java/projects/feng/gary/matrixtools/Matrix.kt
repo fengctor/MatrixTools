@@ -29,6 +29,14 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
         matrixArr[getIndex(i, j)] = value;
     }
 
+    override operator fun equals(other: Any?): Boolean {
+        return other != null &&
+                other is Matrix &&
+                this.numRows == other.numRows &&
+                this.numCols == other.numCols &&
+                this.matrixArr contentEquals other.matrixArr
+    }
+
 
     //---------------------------MATRIX FUNCTIONS-------------------------------------------------//
 
@@ -71,9 +79,9 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
         return other
     }
 
-    fun solveInverse(): Matrix {
+    fun solveInverse(): Matrix? {
         val result = lockstepRref(identityMatrix(numRows))
-        return if (RREF == identityMatrix(numRows)) result else zeroMatrix(numRows, numCols)
+        return if (RREF == identityMatrix(numRows)) result else null
     }
 
     fun clone(): Matrix = Matrix(matrixArr.copyOf(), numRows, numCols)
@@ -125,14 +133,4 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
 
     class Position(val row: Int, val col: Int);
 
-
-    //---------------------------OVERRIDES--------------------------------------------------------//
-
-    override operator fun equals(other: Any?): Boolean {
-        return other != null &&
-                other is Matrix &&
-                this.numRows == other.numRows &&
-                this.numCols == other.numCols &&
-                this.matrixArr contentEquals other.matrixArr
-    }
 }
