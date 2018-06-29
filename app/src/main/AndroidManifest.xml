@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RREFActivity"
+            android:name=".CalculatorActivity"
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"></activity>
     </application>

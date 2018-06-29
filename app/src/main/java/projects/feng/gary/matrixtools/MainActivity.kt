@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
             val numRows = rowSpinner.selectedItem as Int
             val numCols = colSpinner.selectedItem as Int
 
-            val intent = Intent(this, RREFActivity::class.java).apply {
+            val intent = Intent(this, CalculatorActivity::class.java).apply {
                 putExtra(EXTRA_NUM_ROWS, numRows)
                 putExtra(EXTRA_NUM_COLS, numCols)
             }
@@ -29,17 +29,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initSpinners() {
-        val adapter = ArrayAdapter<String>(this, R.layout.spinner_holder)
-        adapter.setDropDownViewResource(R.layout.spinner_row)
-        toolType.adapter = adapter
-
-        val choices = listOf("RREF Calculator")
-        adapter.addAll(choices)
-
         val dimensionAdapter = ArrayAdapter<Int>(this, R.layout.spinner_holder)
-        adapter.setDropDownViewResource(R.layout.spinner_row)
+        dimensionAdapter.setDropDownViewResource(R.layout.spinner_row)
         rowSpinner.adapter = dimensionAdapter
-        val possibleRows = listOf(1, 2, 3, 4, 5)
+        val possibleRows = listOf(1, 2, 3, 4, 5, 6)
         dimensionAdapter.addAll(possibleRows)
 
         colSpinner.adapter = dimensionAdapter

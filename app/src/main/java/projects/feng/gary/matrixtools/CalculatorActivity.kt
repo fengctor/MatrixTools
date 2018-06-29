@@ -10,11 +10,12 @@ import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.GridLayout
-import kotlinx.android.synthetic.main.activity_rref.*
+import kotlinx.android.synthetic.main.activity_calculator.*
 
-class RREFActivity : AppCompatActivity() {
+class CalculatorActivity : AppCompatActivity() {
     val matrixGrid by lazy {
         matrixLayout
     }
@@ -30,11 +31,21 @@ class RREFActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_rref)
+        setContentView(R.layout.activity_calculator)
 
         setUpMatrix(numRows, numCols)
+        initChoiceSpinner()
 
-        getRrefButton.setOnClickListener(View.OnClickListener { showRref() })
+        getRrefButton.setOnClickListener({ showResult() })
+    }
+
+    private fun initChoiceSpinner() {
+        val adapter = ArrayAdapter<String>(this, R.layout.spinner_holder)
+        adapter.setDropDownViewResource(R.layout.spinner_row)
+        type.adapter = adapter
+
+        val choices = listOf("RREF Calculator", "Inverse")
+        adapter.addAll(choices)
     }
 
     private fun createCell(width: Int, focusable: Boolean): EditText {
@@ -57,7 +68,7 @@ class RREFActivity : AppCompatActivity() {
                         r = ""
                         break
                     }
-                    val numChar = dest.fold (0, { acc, c -> if (c == char) 1 else 0 })
+                    val numChar = dest.fold (0, { acc, c -> if (c == char) acc + 1 else 0 })
                     if (char == '-' && (dstart != 0 || numChar > 0)) {
                         r = ""
                         break
@@ -102,19 +113,22 @@ class RREFActivity : AppCompatActivity() {
         }
     }
 
-    private fun showRref() {
-        val matrixArr = Array(numRows * numCols, { _ -> Fraction.zero })
-
+    private fun showResult() {
+        val matrix = Matrix.zeroMatrix(numRows, numCols)
         for (i in 0 until numRows * numCols) {
             val cell = matrixGrid.getChildAt(i) as EditText
-            matrixArr[i] = Fraction(cell.text.toString())
+            matrix[i] = Fraction(cell.text.toString())
         }
 
-        val rref = Matrix(matrixArr, numRows, numCols).solveRref()
+        val result = when (type.selectedItemPosition) {
+            0 -> matrix.solveRref()
+            1 -> matrix.solveInverse()
+            else -> Matrix.zeroMatrix(numRows, numCols)
+        }
 
         for (i in 0 until numRows * numCols) {
             val cell = rrefGrid.getChildAt(i) as EditText
-            cell.setText(rref[i].toString())
+            cell.setText(result[i].toString())
         }
 
         hideKeyboard()
