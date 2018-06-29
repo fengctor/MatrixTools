@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.GridLayout
 import kotlinx.android.synthetic.main.activity_calculator.*
-import kotlin.math.max
 import kotlin.math.min
 
 class CalculatorActivity : AppCompatActivity() {
@@ -37,7 +36,7 @@ class CalculatorActivity : AppCompatActivity() {
         setContentView(R.layout.activity_calculator)
 
         setSupportActionBar(calcBar as Toolbar)
-        supportActionBar?.title = "Matrix Calculations"
+        supportActionBar?.title = getString(R.string.calculator_title)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true);
         supportActionBar?.setDisplayShowHomeEnabled(true);
@@ -45,7 +44,7 @@ class CalculatorActivity : AppCompatActivity() {
         setUpMatrix(numRows, numCols)
         initChoiceSpinner()
 
-        getRrefButton.setOnClickListener({ showResult() })
+        getButton.setOnClickListener({ showResult() })
     }
 
     private fun initChoiceSpinner() {
@@ -53,7 +52,9 @@ class CalculatorActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(R.layout.spinner_row)
         type.adapter = adapter
 
-        val choices = listOf("RREF Calculator", "Inverse")
+        val choices = listOf(
+                getString(R.string.calculator_rref),
+                getString(R.string.calculator_inverse))
         adapter.addAll(choices)
     }
 
@@ -63,31 +64,31 @@ class CalculatorActivity : AppCompatActivity() {
         gridParam.width = width
         cell.setLayoutParams(gridParam)
 
-        cell.textSize = min(width.toFloat() / 6f, 20f)
+        cell.textSize = min(width.toFloat() / 16f, 24f)
         cell.maxLines = 1
         cell.gravity = Gravity.CENTER
         if (focusable) {
             cell.imeOptions = cell.imeOptions or EditorInfo.IME_FLAG_NO_EXTRACT_UI
             cell.inputType = InputType.TYPE_CLASS_PHONE
             val filter = InputFilter { source: CharSequence, start: Int, end: Int, dest: Spanned, dstart: Int, dend: Int ->
-                var r: CharSequence? = null
+                var replace: CharSequence? = null
                 for (i in start until end) {
                     val char = source.get(i)
                     if (!Character.isDigit(char) && char != '/' && char != '.' && char != '-') {
-                        r = ""
+                        replace = ""
                         break
                     }
                     val numChar = dest.fold (0, { acc, c -> if (c == char) acc + 1 else 0 })
                     if (char == '-' && (dstart != 0 || numChar > 0)) {
-                        r = ""
+                        replace = ""
                         break
                     }
                     if ((char == '/' || char == '.') && (numChar > 0 || dstart == 0)) {
-                        r = ""
+                        replace = ""
                         break
                     }
                 }
-                r
+                replace
             }
 
             cell.filters = arrayOf(filter)

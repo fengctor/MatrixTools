@@ -1,4 +1,15 @@
 <resources>
-    <string name="app_name">MatrixTools</string>
+    <string name="app_name">Matrix Tools</string>
+    <string name="home_title">Matrix Tools</string>
+    <string name="calculator_title">Matrix Calculations</string>
+
+    <string name="go">Go</string>
+    <string name="get">Get</string>
+    <string name="num_rows_label">Number of rows:</string>
+    <string name="num_cols_label">Number of columns:</string>
+
     <string name="not_applicable">Not Applicable</string>
+    <string name="calculator_rref">RREF</string>
+    <string name="calculator_inverse">Inverse</string>
+
 </resources>

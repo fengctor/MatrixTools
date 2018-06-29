@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(homeBar as Toolbar)
-        supportActionBar?.title = "Matrix Tools"
+        supportActionBar?.title = getString(R.string.home_title)
 
         initSpinners()
 
