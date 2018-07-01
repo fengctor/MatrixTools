@@ -11,7 +11,8 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
                 }), rows, rows)
     }
 
-    lateinit var RREF: Matrix
+    lateinit var rref: Matrix
+    private var rrefFound = false
 
 
     //---------------------------OPERATOR OVERLOADS-----------------------------------------------//
@@ -41,34 +42,36 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
     //---------------------------MATRIX FUNCTIONS-------------------------------------------------//
 
     fun solveRref(): Matrix {
-        lockstepRref(zeroMatrix(numRows, numCols))
-        return RREF
+        if (!rrefFound) {
+            lockstepRref(zeroMatrix(numRows, numCols))
+        }
+        return rref
     }
 
     private fun lockstepRref(matrix: Matrix): Matrix {
-        RREF = this.clone()
+        rref = this.clone()
         val other = matrix.clone()
 
         var lastLeadingPosition = Position(-1, -1)
 
         for (curRow in 0 until min(numRows, numCols)) {
-            val leadingPosition = RREF.nextLeadingPosition(lastLeadingPosition)
+            val leadingPosition = rref.nextLeadingPosition(lastLeadingPosition)
 
             if (leadingPosition == null) {
                 break
             }
 
-            RREF.swapRows(curRow, leadingPosition.row)
+            rref.swapRows(curRow, leadingPosition.row)
             other.swapRows(curRow, leadingPosition.row)
 
-            val multFactor = RREF[curRow, leadingPosition.col].reciprocal()
-            RREF.multiplyRow(multFactor, curRow)
+            val multFactor = rref[curRow, leadingPosition.col].reciprocal()
+            rref.multiplyRow(multFactor, curRow)
             other.multiplyRow(multFactor, curRow)
 
             for (row in 0 until numRows) {
                 if (row != curRow) {
-                    val rowFactor = -RREF[row, leadingPosition.col]
-                    RREF.addMultipleOfRow(row, rowFactor, curRow)
+                    val rowFactor = -rref[row, leadingPosition.col]
+                    rref.addMultipleOfRow(row, rowFactor, curRow)
                     other.addMultipleOfRow(row, rowFactor, curRow)
                 }
             }
@@ -76,12 +79,13 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
             lastLeadingPosition = leadingPosition
         }
 
+        rrefFound = true
         return other
     }
 
     fun solveInverse(): Matrix? {
         val result = lockstepRref(identityMatrix(numRows))
-        return if (RREF == identityMatrix(numRows)) result else null
+        return if (rref == identityMatrix(numRows)) result else null
     }
 
     fun clone(): Matrix = Matrix(matrixArr.copyOf(), numRows, numCols)
