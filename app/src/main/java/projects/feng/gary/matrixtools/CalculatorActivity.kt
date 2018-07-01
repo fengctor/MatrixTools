@@ -49,7 +49,8 @@ class CalculatorActivity : AppCompatActivity() {
 
         val choices = listOf(
                 getString(R.string.calculator_rref),
-                getString(R.string.calculator_inverse))
+                getString(R.string.calculator_inverse),
+                getString(R.string.calculator_rank))
         adapter.addAll(choices)
     }
 
@@ -126,23 +127,36 @@ class CalculatorActivity : AppCompatActivity() {
 
         val matrix = getGridAsMatrix()
 
-        val result = when (type.selectedItemPosition) {
-            0 -> matrix.solveRref()
-            1 -> matrix.solveInverse()
-            else -> Matrix.zeroMatrix(numRows, numCols)
+        when (type.selectedItemPosition) {
+            0 -> fillMatrix(matrix.solveRref())
+            1 -> fillMatrix(matrix.solveInverse())
+            2 -> showValue(matrix.getRank().toString())
+            else -> sendToast(R.string.unhandled_case)
         }
 
-        if (result == null) {
+    }
+
+    private fun fillMatrix(matrix: Matrix?) {
+        valueText.visibility = View.GONE
+        if (matrix == null) {
+            resultGrid.visibility = View.GONE
             sendToast(R.string.not_applicable)
-            return
-        }
+        } else {
+            resultGrid.visibility = View.VISIBLE
 
-        for (i in 0 until numRows * numCols) {
-            val cell = resultGrid.getChildAt(i) as EditText
-            cell.setText(result[i].toString())
+            for (i in 0 until numRows * numCols) {
+                val cell = resultGrid.getChildAt(i) as EditText
+                cell.setText(matrix[i].toString())
+            }
         }
     }
 
+    private fun showValue(str: String) {
+        resultGrid.visibility = View.GONE
+        valueText.visibility = View.VISIBLE
+
+        valueText.setText(str)
+    }
     private fun getGridAsMatrix(): Matrix {
         val matrix = Matrix.zeroMatrix(numRows, numCols)
         for (i in 0 until numRows * numCols) {

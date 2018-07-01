@@ -88,6 +88,25 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
         return if (rref == identityMatrix(numRows)) result else null
     }
 
+    fun getRank(): Int {
+        if (!rrefFound) {
+            solveRref()
+        }
+
+        var index = 0
+        var rank = 0
+        while (index < numRows * numCols) {
+            if (rref[index] == Fraction.one) {
+                ++rank
+                index += numCols + 1
+            } else {
+                ++index
+            }
+        }
+
+        return rank
+    }
+
     fun clone(): Matrix = Matrix(matrixArr.copyOf(), numRows, numCols)
 
 
