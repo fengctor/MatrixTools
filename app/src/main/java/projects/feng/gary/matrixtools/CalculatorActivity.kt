@@ -131,8 +131,8 @@ class CalculatorActivity : AppCompatActivity() {
         when (type.selectedItemPosition) {
             0 -> fillMatrix(matrix.getRref())
             1 -> fillMatrix(matrix.getInverse())
-            2 -> showValue(getString(R.string.rank_format, matrix.getRank()))
-            3 -> showValue(getString(R.string.determinant_format, matrix.getDeterminant()))
+            2 -> showValue(R.string.rank_format, matrix.getRank())
+            3 -> showValue(R.string.determinant_format, matrix.getDeterminant())
             else -> sendToast(R.string.unhandled_case)
         }
 
@@ -153,11 +153,17 @@ class CalculatorActivity : AppCompatActivity() {
         }
     }
 
-    private fun showValue(str: String) {
+    private fun showValue(resId: Int, arg: Any?) {
         resultGrid.visibility = View.GONE
-        valueText.visibility = View.VISIBLE
 
-        valueText.setText(str)
+        if (arg == null) {
+            valueText.visibility = View.GONE
+            sendToast(R.string.not_applicable)
+        } else {
+            valueText.visibility = View.VISIBLE
+
+            valueText.setText(getString(resId, arg))
+        }
     }
     private fun getGridAsMatrix(): Matrix {
         val matrix = Matrix.zeroMatrix(numRows, numCols)

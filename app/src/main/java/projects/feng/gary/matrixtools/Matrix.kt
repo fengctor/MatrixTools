@@ -89,9 +89,7 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
     }
 
     fun getRank(): Int {
-        if (!rrefFound) {
-            getRref()
-        }
+        getRref()
 
         var index = 0
         var rank = 0
@@ -121,7 +119,7 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
             val cof = (if (i % 2 == 0) Fraction.one else -Fraction.one) *
                     removeRowAndCol(0, i).getDeterminant()!!
 
-            det = det + this[i] * cof
+            det += this[i] * cof
         }
 
         return det
