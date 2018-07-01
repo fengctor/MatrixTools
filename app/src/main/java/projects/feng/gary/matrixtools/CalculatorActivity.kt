@@ -50,7 +50,8 @@ class CalculatorActivity : AppCompatActivity() {
         val choices = listOf(
                 getString(R.string.calculator_rref),
                 getString(R.string.calculator_inverse),
-                getString(R.string.calculator_rank))
+                getString(R.string.calculator_rank),
+                getString(R.string.calculator_determinant))
         adapter.addAll(choices)
     }
 
@@ -128,9 +129,10 @@ class CalculatorActivity : AppCompatActivity() {
         val matrix = getGridAsMatrix()
 
         when (type.selectedItemPosition) {
-            0 -> fillMatrix(matrix.solveRref())
-            1 -> fillMatrix(matrix.solveInverse())
-            2 -> showValue(matrix.getRank().toString())
+            0 -> fillMatrix(matrix.getRref())
+            1 -> fillMatrix(matrix.getInverse())
+            2 -> showValue(getString(R.string.rank_format, matrix.getRank()))
+            3 -> showValue(getString(R.string.determinant_format, matrix.getDeterminant()))
             else -> sendToast(R.string.unhandled_case)
         }
 

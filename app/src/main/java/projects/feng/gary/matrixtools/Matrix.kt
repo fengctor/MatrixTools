@@ -11,7 +11,7 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
                 }), rows, rows)
     }
 
-    lateinit var rref: Matrix
+    private lateinit var rref: Matrix
     private var rrefFound = false
 
 
@@ -41,7 +41,7 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
 
     //---------------------------MATRIX FUNCTIONS-------------------------------------------------//
 
-    fun solveRref(): Matrix {
+    fun getRref(): Matrix {
         if (!rrefFound) {
             lockstepRref(zeroMatrix(numRows, numCols))
         }
@@ -76,21 +76,21 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
                 }
             }
 
-            lastLeadingPosition = leadingPosition
+            lastLeadingPosition = Position(curRow, leadingPosition.col)
         }
 
         rrefFound = true
         return other
     }
 
-    fun solveInverse(): Matrix? {
+    fun getInverse(): Matrix? {
         val result = lockstepRref(identityMatrix(numRows))
         return if (rref == identityMatrix(numRows)) result else null
     }
 
     fun getRank(): Int {
         if (!rrefFound) {
-            solveRref()
+            getRref()
         }
 
         var index = 0
@@ -105,6 +105,48 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
         }
 
         return rank
+    }
+
+    fun getDeterminant(): Fraction? {
+        if (numRows != numCols) {
+            return null
+        }
+
+        if (numRows == 2) {
+            return this[0, 0] * this[1, 1] - this[0, 1] * this[1, 0]
+        }
+
+        var det = Fraction.zero
+        for (i in 0 until numCols) {
+            val cof = (if (i % 2 == 0) Fraction.one else -Fraction.one) *
+                    removeRowAndCol(0, i).getDeterminant()!!
+
+            det = det + this[i] * cof
+        }
+
+        return det
+    }
+
+    private fun removeRowAndCol(row: Int, col: Int): Matrix {
+        val producedMatrix = Matrix(Array((numRows - 1) * (numCols - 1), { Fraction.zero }),
+                numRows - 1,
+                numCols - 1)
+
+        var index = 0
+        for (i in 0 until numRows) {
+            if (i == row) {
+                continue
+            }
+            for (j in 0 until numCols) {
+                if (j == col) {
+                    continue
+                }
+                producedMatrix[index] = this[i, j]
+                ++index
+            }
+        }
+
+        return producedMatrix
     }
 
     fun clone(): Matrix = Matrix(matrixArr.copyOf(), numRows, numCols)
