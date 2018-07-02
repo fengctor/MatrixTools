@@ -7,9 +7,10 @@ import android.view.Gravity
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import java.math.BigInteger
 
 
-fun Int.abs(): Int = if (this < 0) -this else this
+fun BigInteger.abs(): BigInteger = if (this < 0.toBigInteger()) -this else this
 
 
 @TargetApi(27)
