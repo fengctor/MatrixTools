@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         val dimensionAdapter = ArrayAdapter<Int>(this, R.layout.spinner_holder)
         dimensionAdapter.setDropDownViewResource(R.layout.spinner_row)
         rowSpinner.adapter = dimensionAdapter
-        val possibleRows = listOf(1, 2, 3, 4, 5, 6)
+        val possibleRows = listOf(2, 3, 4, 5, 6)
         dimensionAdapter.addAll(possibleRows)
 
         colSpinner.adapter = dimensionAdapter
