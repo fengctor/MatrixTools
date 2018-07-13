@@ -38,6 +38,34 @@ class Matrix(val matrixArr: Array<Fraction>, val numRows: Int, val numCols: Int)
                 this.matrixArr contentEquals other.matrixArr
     }
 
+    operator fun plus(other: Matrix): Matrix {
+        if (this.numRows != other.numRows || this.numCols != other.numCols) {
+            throw IllegalArgumentException("Can't do that buddy")
+        }
+
+        val result = this.clone()
+        for (i in 0 until numRows) {
+            for (j in 0 until numCols) {
+                result[i, j] += other[i, j]
+            }
+        }
+
+        return result
+    }
+
+    operator fun minus(other: Matrix): Matrix = this + -other
+    
+    operator fun unaryMinus(): Matrix {
+        val result = this.clone()
+        for (i in 0 until numRows) {
+            for (j in 0 until numCols) {
+                result[i, j] *= Fraction(-1)
+            }
+        }
+
+        return result
+    }
+
 
     //---------------------------MATRIX FUNCTIONS-------------------------------------------------//
 
